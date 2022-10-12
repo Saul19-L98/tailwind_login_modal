@@ -1,4 +1,4 @@
-const CopyPlugin = require('copy-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
 module.exports = {
@@ -24,24 +24,34 @@ module.exports = {
 				use: ['style-loader', 'css-loader', 'postcss-loader'],
 			},
 			{
-				type: "asset",
 				test: /\.(png|svg|jpg|gif)$/i,
+				// type: "asset/resource",
 				use:[
 					{
 						loader:'file-loader',
 						options:{
-							name: '[name].[ext]',
-							outputPath:'img/',
+							//[name]
+							name: '[hash].[ext]',
+							outputPath:'./assets/img/',
 							useRelativePath:true,
 						}
 					}
 				]
+			},
+			{
+				test: /\.(woff|woff2|eot|ttf)$/i,
+				type: "asset/resource",
+				generator: {
+					filename: "assets/fonts/[hash][ext][query]"
+				}
 			}
 		],
 	},
 	plugins:[
-		new CopyPlugin({
-			patterns:[{from: "public/index.html", to: "index.html"}],
+		new HtmlWebpackPlugin({
+			inject: true,
+			template: './public/index.html',
+			filename: './index.html',
 		})
 	]
 }
